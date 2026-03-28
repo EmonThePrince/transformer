@@ -47,15 +47,11 @@ class DecoderOnlyTransformer:
         self.training = True
         self.dropout = tools.Dropout(dropout)
     
-<<<<<<< HEAD
-    def __call__(self, x):
-=======
     def __call__(self, x, y = None):
         key_padding_mask = None
         if self.padding_idx is not None:
             key_padding_mask = (x == self.padding_idx)
 
->>>>>>> b41d8b2 (final version without documentation.  finetuned complete, model weights, saved, cleaned some code.)
         tok = self.token_embedding(x)
         pos = self.pos_embedding(tok)  
         x = self.dropout(tok + pos)
@@ -90,10 +86,6 @@ class DecoderOnlyTransformer:
         for layer in self.layers:
             params += layer.parameters()
         params += self.ln_f.parameters()
-<<<<<<< HEAD
-        if self.output_proj.b is not None:
-            params.append(self.output_proj.b)
-=======
        
         # if self.output_proj.w is not self.token_embedding.embedding:
         #     params.append(self.output_proj.w)
@@ -101,7 +93,6 @@ class DecoderOnlyTransformer:
         #     params.append(self.output_proj.b)
         
         params += self.output_proj.parameters()
->>>>>>> b41d8b2 (final version without documentation.  finetuned complete, model weights, saved, cleaned some code.)
         return params
     
     def state_dict(self):
@@ -246,9 +237,6 @@ class DecoderOnlyTransformer:
             layer.eval()
         self.ln_f.eval()
         self.output_proj.eval()
-<<<<<<< HEAD
-        self.dropout.eval()
-=======
         self.dropout.eval()
 
     def to(self, device):
@@ -277,4 +265,3 @@ class DecoderOnlyTransformer:
                     param.grad = None
                 else:
                     param.grad.zero_()
->>>>>>> b41d8b2 (final version without documentation.  finetuned complete, model weights, saved, cleaned some code.)

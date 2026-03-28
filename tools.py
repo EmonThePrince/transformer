@@ -52,9 +52,6 @@ class Embedding:
     def parameters(self):
         return [self.embedding]
 
-<<<<<<< HEAD
-class PositionalEncoding:
-=======
     def to(self, device):
         self.embedding = self.embedding.detach().to(device).requires_grad_(True)
         if self.padding_idx is not None:
@@ -77,7 +74,6 @@ class PositionalEncoding:
 
 
 class PositionalEncodingSinusoidal:
->>>>>>> b41d8b2 (final version without documentation.  finetuned complete, model weights, saved, cleaned some code.)
     def __init__(self, d_model, max_len=5000):
         self.d_model = d_model
         pe = torch.zeros(max_len, d_model)
@@ -93,8 +89,6 @@ class PositionalEncodingSinusoidal:
         return x + self.pe[:T]
     def parameters(self):
         return []
-<<<<<<< HEAD
-=======
     def to(self, device):
         self.pe = self.pe.to(device)
         return self
@@ -126,7 +120,6 @@ class PositionalEncoding:
     
     def eval(self):
         return self
->>>>>>> b41d8b2 (final version without documentation.  finetuned complete, model weights, saved, cleaned some code.)
 
 
 class Softmax:
