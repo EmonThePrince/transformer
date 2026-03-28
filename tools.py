@@ -26,6 +26,18 @@ class Linear:
             params.append(self.b)
         return params
 
+    def to(self, device):
+        self.w = self.w.detach().to(device).requires_grad_(True)
+        if self.b is not None:
+            self.b = self.b.detach().to(device).requires_grad_(True)
+        return self
+
+    def train(self):
+        return self
+
+    def eval(self):
+        return self
+
 class Embedding:
     def __init__(self, vocab_size, embedding_dim, padding_idx=None):
         self.embedding = torch.randn(vocab_size, embedding_dim)
@@ -72,7 +84,6 @@ class Embedding:
     def eval(self):
         return self
 
-
 class PositionalEncodingSinusoidal:
     def __init__(self, d_model, max_len=5000):
         self.d_model = d_model
@@ -96,7 +107,6 @@ class PositionalEncodingSinusoidal:
         return self
     def eval(self):
         return self
-    
 
 class PositionalEncoding:
     def __init__(self, d_model, max_len=5000):
@@ -154,6 +164,9 @@ class Dropout:
     def parameters(self):
         return []
 
+    def to(self, device):
+        return self
+
 class MultiHeadAttention:
     def __init__(self, embed_dim, n_head, is_causal = True, max_seq_len = 1024, dropout = 0.0):
         assert embed_dim % n_head == 0
@@ -191,6 +204,14 @@ class MultiHeadAttention:
     
     def parameters(self):
         return self.qkv_proj.parameters() + self.out_proj.parameters()
+
+    def to(self, device):
+        self.qkv_proj.to(device)
+        self.out_proj.to(device)
+        self.mask = self.mask.to(device)
+        self.attn_dropout.to(device)
+        self.resid_dropout.to(device)
+        return self
     
     def train(self):
         self.attn_dropout.train()
@@ -215,6 +236,18 @@ class LayerNorm:
 
     def parameters(self):
         return [self.gamma, self.beta]
+
+    def to(self, device):
+        # keep gamma and beta as leaf tensors with gradients
+        self.gamma = self.gamma.detach().to(device).requires_grad_(True)
+        self.beta = self.beta.detach().to(device).requires_grad_(True)
+        return self
+
+    def train(self):
+        return self
+
+    def eval(self):
+        return self
     
 class FeedForward:
     def __init__(self, embed_dim, hidden_dim, dropout=0.0):
@@ -237,3 +270,9 @@ class FeedForward:
         self.dropout.train()
     def eval(self):
         self.dropout.eval()
+
+    def to(self, device):
+        self.linear1.to(device)
+        self.linear2.to(device)
+        self.dropout.to(device)
+        return self

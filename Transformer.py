@@ -32,12 +32,21 @@ class DecoderOnlyTransformerLayer:
         self.dropout.eval()
         self.feedforward.eval()
 
+    def to(self, device):
+        self.attention.to(device)
+        self.feedforward.to(device)
+        self.layernorm1.to(device)
+        self.layernorm2.to(device)
+        self.dropout.to(device)
+        return self
+
 class DecoderOnlyTransformer:
     def __init__(self, vocab_size, embed_dim, n_head, n_layer, max_seq_len=1024, dropout=0.0, padding_idx=None):
         self.token_embedding = tools.Embedding(vocab_size, embed_dim, padding_idx=padding_idx)
         self.pos_embedding = tools.PositionalEncoding(embed_dim, max_seq_len)
         self.layers = [DecoderOnlyTransformerLayer(embed_dim, n_head, max_seq_len, dropout) for _ in range(n_layer)]
         self.ln_f = tools.LayerNorm(embed_dim)
+        self.padding_idx = padding_idx
         
         # self.output_proj = tools.Linear(embed_dim, vocab_size)
         # self.output_proj.w = self.token_embedding.embedding
